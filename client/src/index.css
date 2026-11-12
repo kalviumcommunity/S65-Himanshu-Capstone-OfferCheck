@@ -10,3 +10,41 @@ main {
   margin: 0 auto;
   padding: 24px 16px;
 }
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+input[type='search'] {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 12px;
+  text-align: left;
+  background: #fff;
+}
+
+form {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
