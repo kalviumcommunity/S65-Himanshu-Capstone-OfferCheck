@@ -1,22 +1,22 @@
 const express = require('express');
-const { companies, reports } = require('../data/dummy');
+const Company = require('../models/Company');
+const Report = require('../models/Report');
 
 const router = express.Router();
+const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // GET /api/companies?q=term searches by name or email domain
-router.get('/', (req, res) => {
-  const q = (req.query.q || '').toLowerCase();
-  const result = companies.filter(
-    (c) => c.name.toLowerCase().includes(q) || c.emailDomain.includes(q)
-  );
-  res.json(result);
+router.get('/', async (req, res) => {
+  const q = new RegExp(escape(req.query.q || ''), 'i');
+  res.json(await Company.find({ $or: [{ name: q }, { emailDomain: q }] }).sort({ name: 1 }));
 });
 
 // GET /api/companies/:id returns one company with its reports
-router.get('/:id', (req, res) => {
-  const company = companies.find((c) => c._id === req.params.id);
+router.get('/:id', async (req, res) => {
+  const company = await Company.findById(req.params.id).catch(() => null);
   if (!company) return res.status(404).json({ error: 'Company not found' });
-  res.json({ ...company, reports: reports.filter((r) => r.company === company._id) });
+  const reports = await Report.find({ company: company._id }).sort({ createdAt: -1 });
+  res.json({ ...company.toObject(), reports });
 });
 
 module.exports = router;
