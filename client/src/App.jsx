@@ -31,6 +31,22 @@ function App() {
     openCompany(report.company)
   }
 
+  const updateReport = async (id, data) => {
+    const res = await fetch(`/api/reports/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    if (!res.ok) alert((await res.json()).error)
+    openCompany(selected._id)
+  }
+
+  const deleteReport = async (id) => {
+    if (!confirm('Delete this report?')) return
+    await fetch(`/api/reports/${id}`, { method: 'DELETE' })
+    openCompany(selected._id)
+  }
+
   return (
     <main>
       <h1>Offer Check</h1>
@@ -42,7 +58,7 @@ function App() {
       {selected && (
         <section>
           <h2>{selected.name}</h2>
-          <ReportList reports={selected.reports} />
+          <ReportList reports={selected.reports} onUpdate={updateReport} onDelete={deleteReport} />
         </section>
       )}
       <ReportForm onSubmit={addReport} />

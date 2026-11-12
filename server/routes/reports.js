@@ -36,4 +36,11 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// DELETE /api/reports/:id removes a report
+router.delete('/:id', async (req, res) => {
+  const report = await Report.findByIdAndDelete(req.params.id).catch(() => null);
+  if (!report) return res.status(404).json({ error: 'Report not found' });
+  res.json({ message: 'Report deleted' });
+});
+
 module.exports = router;
